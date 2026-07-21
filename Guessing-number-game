@@ -1,36 +1,40 @@
 import random
 
-while True:  # Outer loop: restart the game
+MIN_NUMBER = 1
+MAX_NUMBER = 100
 
-    secret = random.randint(1, 100)
+while True:
+    secret = random.randint(MIN_NUMBER, MAX_NUMBER)
     attempts = 0
 
-    print("I picked a number between 1 and 100.")
+    print(f"I picked a number between {MIN_NUMBER} and {MAX_NUMBER}.")
 
-    while True:  # Inner loop: guessing
-
-        while True:  # Input validation loop
+    while True:
+        while True:
             try:
                 answer = int(input("Guess the number: "))
-                break
-            except:
+                if MIN_NUMBER <= answer <= MAX_NUMBER:
+                    break
+                print(f"Please enter a number between {MIN_NUMBER} and {MAX_NUMBER}.")
+            except ValueError:
                 print("Please enter a valid number.")
 
         attempts += 1
 
         if answer > secret:
             print("Too high!")
-
         elif answer < secret:
             print("Too low!")
-
         else:
-            print("You got it!")
-            print(f"You needed {attempts} attempts.")
-            break  # Exit guessing loop
+            print(f"🎉 You got it in {attempts} attempts!")
+            break
 
-    again = input("Play again? (y/n): ")
+    while True:
+        again = input("Play again? (y/n): ").strip().lower()
+        if again in ['y', 'n']:
+            break
+        print("Please enter 'y' or 'n'.")
 
-    if again.lower() == "n":
+    if again == 'n':
         print("Goodbye!")
-        break  # Exit game loop
+        break
