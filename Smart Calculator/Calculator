@@ -1,39 +1,76 @@
-def calculate(num1, operator, num2):
+from typing import Callable, Dict, Union
 
-    if operator == "+":
-        return num1 + num2
-
-    elif operator == "-":
-        return num1 - num2
-
-    elif operator == "*":
-        return num1 * num2
-
-    elif operator == "/":
-        if num2 != 0:
-            return num1 / num2
-        else:
-            return "Cannot divide by zero"
-
-    else:
-        return "Invalid operator"
+# Define operations using lambdas
+operations: Dict[str, Callable[[float, float], float]] = {
+    "+": lambda x, y: x + y,
+    "-": lambda x, y: x - y,
+    "*": lambda x, y: x * y,
+    "/": lambda x, y: x / y if y != 0 else None,
+}
 
 
-while True:
+def calculate(num1: float, operator: str, num2: float) -> float:
+    """
+    Perform arithmetic calculation.
+    
+    Args:
+        num1: First number
+        operator: Operator (+, -, *, /)
+        num2: Second number
+        
+    Returns:
+        Result of the calculation
+        
+    Raises:
+        ValueError: If operator is invalid or division by zero occurs
+    """
+    if operator not in operations:
+        raise ValueError(f"Invalid operator: '{operator}'. Use +, -, *, or /")
+    
+    if operator == "/" and num2 == 0:
+        raise ValueError("Cannot divide by zero")
+    
+    return operations[operator](num1, num2)
 
+
+def get_user_input() -> Union[tuple, None]:
+    """
+    Get calculation input from user.
+    
+    Returns:
+        Tuple of (num1, operator, num2) or None if input is invalid
+    """
     try:
-        number1 = float(input("First number: "))
-        operation = input("Operator (+ - * /): ")
-        number2 = float(input("Second number: "))
-
-        result = calculate(number1, operation, number2)
-
-        print("Result:", result)
-
+        num1 = float(input("First number: "))
+        operator = input("Operator (+ - * /): ")
+        num2 = float(input("Second number: "))
+        return num1, operator, num2
     except ValueError:
-        print("Please enter numbers only")
+        print("Please enter valid numbers only")
+        return None
 
-    again = input("Again? (y/n): ").lower()
 
-    if again != "y":
-        break
+def main():
+    """Main calculator loop."""
+    while True:
+        # Get user input
+        user_input = get_user_input()
+        if user_input is None:
+            continue
+        
+        num1, operator, num2 = user_input
+        
+        # Perform calculation
+        try:
+            result = calculate(num1, operator, num2)
+            print(f"Result: {result}\n")
+        except ValueError as e:
+            print(f"Error: {e}\n")
+        
+        # Ask if user wants to continue
+        if input("Again? (y/n): ").lower() != "y":
+            break
+
+
+if __name__ == "__main__":
+    main()
