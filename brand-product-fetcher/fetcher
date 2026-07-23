@@ -1,0 +1,33 @@
+import psycopg
+
+# Replace these with your actual credentials
+conn = psycopg.connect("postgresql://postgres:Xlv^7DcS7@localhost/ecommerce")
+
+# Create a cursor to execute queries
+cur = conn.cursor()
+
+# Prompt the user for a brand name
+brand_name = input("Enter the brand name: ")
+
+# Query the brand ID based on the name
+cur.execute("SELECT id FROM brands WHERE name = %s", (brand_name,))
+brand = cur.fetchone()
+
+if brand:
+    brand_id = brand[0]
+    # Fetch products for that brand
+    cur.execute("SELECT id, name FROM products WHERE brand_id = %s", (brand_id,))
+    products = cur.fetchall()
+
+    if products:
+        print(f"Products for brand '{brand_name}':")
+        for prod in products:
+            print(f"ID: {prod[0]}, Name: {prod[1]}")
+    else:
+        print(f"No products found for brand '{brand_name}'.")
+else:
+    print(f"Brand '{brand_name}' not found.")
+
+# Close the cursor and connection
+cur.close()
+conn.close()
