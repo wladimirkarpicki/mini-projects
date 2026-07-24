@@ -23,6 +23,18 @@ if brand:
         print(f"Products for brand '{brand_name}':")
         for prod in products:
             print(f"ID: {prod[0]}, Name: {prod[1]}")
+        
+        # Prompt the user to select a model
+        product_id = input("Enter the product ID to fetch price: ")
+        
+        # Query the price for the selected product
+        cur.execute("SELECT name, price FROM products WHERE id = %s", (product_id,))
+        product = cur.fetchone()
+        
+        if product:
+            print(f"Product: {product[0]}, Price: ${product[1]}")
+        else:
+            print(f"Product with ID '{product_id}' not found.")
     else:
         print(f"No products found for brand '{brand_name}'.")
 else:
